@@ -2,7 +2,7 @@ package sqlt
 
 import "database/sql"
 
-// Rawset is plain two-dimensional data table
+// Rowset is plain two-dimensional data table
 // containing data, obtained from SQL database
 // in non-structured way (via interface{})
 type Rowset struct {
@@ -60,4 +60,30 @@ func (r Rowset) SliceMap() (out []map[string]interface{}) {
 		out = append(out, m)
 	})
 	return
+}
+
+// MapValuesStd maps all values in rowset using standard conversion function.
+func (r Rowset) MapValuesStd() Rowset {
+	return r.MapValues(StdConvert)
+}
+
+// MapValues maps all values in rowset using given conversion function.
+func (r Rowset) MapValues(f func(src interface{}, def *sql.ColumnType) interface{}) Rowset {
+	if f == nil {
+		return r
+	}
+	out := Rowset{
+		ColumnNames: r.ColumnNames,
+		ColumnTypes: r.ColumnTypes,
+	}
+
+	cnt := len(r.ColumnNames)
+	for _, src := range r.Rows {
+		row := make([]interface{}, cnt)
+		for i := 0; i < cnt; i++ {
+			row[i] = f(src[i], r.ColumnTypes[i])
+		}
+		out.Rows = append(out.Rows, row)
+	}
+	return out
 }
