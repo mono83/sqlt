@@ -2,19 +2,29 @@ package sqlt
 
 import "database/sql"
 
-// Executor is a thin interface for database connection capable to modify data
-type Executor interface {
-	Exec(query string, args ...any) (sql.Result, error)
+// Getter is a thin interface for database connection capable to read data
+type Getter interface {
+	Get(dest interface{}, query string, args ...interface{}) error
 }
 
 // Selector is a thin interface for database connection capable to read data
 type Selector interface {
-	Get(dest interface{}, query string, args ...interface{}) error
 	Select(dest interface{}, query string, args ...interface{}) error
 }
 
-// SelectorExecutor is a thin interface for database connection capable to both read and write data
-type SelectorExecutor interface {
+// Reader is an interface defining connection able to perform read operations
+type Reader interface {
+	Getter
 	Selector
+}
+
+// Executor is a thin interface for database connection capable to modify data
+type Executor interface {
+	Exec(query string, args ...interface{}) (sql.Result, error)
+}
+
+// ReaderExecutor is a thin interface for database connection capable to both read and write data
+type ReaderExecutor interface {
+	Reader
 	Executor
 }
