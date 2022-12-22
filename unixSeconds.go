@@ -1,20 +1,16 @@
 package sqlt
 
 import (
+	"database/sql/driver"
 	"errors"
 	"strconv"
 	"time"
 )
 
-var ErrUnsupportedTypeForUnixSeconds = errors.New("unsupported type")
+var ErrUnixSecondsUnsupportedType = errors.New("unsupported type")
 
 // UnixSeconds is type containing timestamp in unix seconds
 type UnixSeconds int64
-
-// String returns string representation of time
-func (u UnixSeconds) String() string {
-	return u.Time().String()
-}
 
 // Int64 returns unix seconds as int64
 func (u UnixSeconds) Int64() int64 {
@@ -25,6 +21,9 @@ func (u UnixSeconds) Int64() int64 {
 func (u UnixSeconds) Time() time.Time {
 	return time.Unix(u.Int64(), 0).UTC()
 }
+
+// Value is a driver.Valuer interface implementation
+func (u UnixSeconds) Value() (driver.Value, error) { return int64(u), nil }
 
 // NativeSQL returns data in SQL native format
 func (u UnixSeconds) NativeSQL() interface{} {
@@ -50,5 +49,8 @@ func (u *UnixSeconds) Scan(src interface{}) error {
 		}
 		return err
 	}
-	return ErrUnsupportedTypeForUnixSeconds
+	return ErrUnixSecondsUnsupportedType
 }
+
+// String return string representation of time in UTC
+func (u UnixSeconds) String() string { return u.Time().UTC().String() }
