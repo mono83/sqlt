@@ -20,7 +20,7 @@ func MakeStdGetterByColumn[K any, V any](db Getter, table, column string) func(k
 
 // MakeStdSelectorByColumn created function that will fetch multiple entities
 // from database by `column IN (keys...)` criteria.
-func MakeStdSelectorByColumn[K any, V any](db Getter, table, column string) func(keys ...K) ([]V, error) {
+func MakeStdSelectorByColumn[K any, V any](db Selector, table, column string) func(keys ...K) ([]V, error) {
 	queryPrefix := "SELECT * FROM " + table + " WHERE " + column + " IN ("
 	return func(keys ...K) ([]V, error) {
 		if len(keys) == 0 {
@@ -39,7 +39,7 @@ func MakeStdSelectorByColumn[K any, V any](db Getter, table, column string) func
 		query.WriteRune(')')
 
 		var target []V
-		if err := db.Get(&target, query.String(), ikeys...); err != nil {
+		if err := db.Select(&target, query.String(), ikeys...); err != nil {
 			return nil, err
 		}
 		return target, nil
