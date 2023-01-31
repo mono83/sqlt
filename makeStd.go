@@ -18,7 +18,21 @@ func MakeStdGetterByColumn[V any](db Getter, table, column string) func(key any)
 	}
 }
 
-// MakeStdSelectorByColumn created function that will fetch multiple entities
+// MakeStdSelectorAll creates function that will fetch all data from
+// database table
+func MakeStdSelectorAll[V any](db Selector, table string) func() ([]V, error) {
+	query := "SELECT * FROM " + table
+	return func() ([]V, error) {
+		var target []V
+		if err := db.Select(&target, query); err != nil {
+			return nil, err
+		}
+
+		return target, nil
+	}
+}
+
+// MakeStdSelectorByColumn creates function that will fetch multiple entities
 // from database by `column IN (keys...)` criteria.
 func MakeStdSelectorByColumn[V any](db Selector, table, column string) func(keys ...any) ([]V, error) {
 	queryPrefix := "SELECT * FROM " + table + " WHERE " + column + " IN ("

@@ -20,6 +20,18 @@ func TestMakeStdGetterByColumn(t *testing.T) {
 	}
 }
 
+func TestMakeStdSelectorAll(t *testing.T) {
+	db := CallbackDB{OnSelect: func(_ interface{}, query string, args ...interface{}) error {
+		assert.Equal(t, "SELECT * FROM constants", query)
+		assert.Len(t, args, 0)
+		return nil
+	}}
+
+	all := MakeStdSelectorAll[user](db, "constants")
+	if _, err := all(); assert.NoError(t, err) {
+	}
+}
+
 func TestMakeStdSelectorByColumn(t *testing.T) {
 	db := CallbackDB{OnSelect: func(_ interface{}, query string, args ...interface{}) error {
 		assert.Equal(t, "SELECT * FROM settings WHERE userId IN (?,?)", query)
