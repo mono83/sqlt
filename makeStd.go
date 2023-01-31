@@ -7,9 +7,9 @@ import "bytes"
 // Will return sql.ErrNoRows if no matches and driver-specific error if
 // more than one entity matched.
 // To match more than one, use MakeStdSelectorByColumn.
-func MakeStdGetterByColumn[K any, V any](db Getter, table, column string) func(key K) (*V, error) {
+func MakeStdGetterByColumn[V any](db Getter, table, column string) func(key any) (*V, error) {
 	query := "SELECT * FROM " + table + " WHERE " + column + " = ?"
-	return func(key K) (*V, error) {
+	return func(key any) (*V, error) {
 		var target V
 		if err := db.Get(&target, query, key); err != nil {
 			return nil, err
@@ -20,9 +20,9 @@ func MakeStdGetterByColumn[K any, V any](db Getter, table, column string) func(k
 
 // MakeStdSelectorByColumn created function that will fetch multiple entities
 // from database by `column IN (keys...)` criteria.
-func MakeStdSelectorByColumn[K any, V any](db Selector, table, column string) func(keys ...K) ([]V, error) {
+func MakeStdSelectorByColumn[V any](db Selector, table, column string) func(keys ...any) ([]V, error) {
 	queryPrefix := "SELECT * FROM " + table + " WHERE " + column + " IN ("
-	return func(keys ...K) ([]V, error) {
+	return func(keys ...any) ([]V, error) {
 		if len(keys) == 0 {
 			return nil, nil // No data and no error
 		}
