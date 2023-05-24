@@ -5,7 +5,7 @@ import "github.com/mono83/sqlt"
 // GetByID reads single entity from database
 func GetByID[T any](getter sqlt.Getter, table string, id any) (*T, error) {
 	var out T
-	if err := getter.Get(&out, "SELECT * FROM "+table+" WHERE `id`=?", id); err != nil {
+	if err := getter.Get(&out, "SELECT * FROM "+Name(table)+" WHERE `id`=?", id); err != nil {
 		return nil, err
 	}
 	return &out, nil

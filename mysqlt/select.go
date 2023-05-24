@@ -8,7 +8,7 @@ import (
 func SelectByID[T any](selector sqlt.Selector, table string, id ...any) (out []T, err error) {
 	if len(id) > 0 {
 		sql, args := In(id...)
-		err = selector.Select(&out, "SELECT * FROM "+table+" WHERE `id`"+sql, args...)
+		err = selector.Select(&out, "SELECT * FROM "+Name(table)+" WHERE `id`"+sql, args...)
 	}
 	return
 }
