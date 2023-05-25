@@ -10,11 +10,18 @@ import (
 
 func TestInsert(t *testing.T) {
 	db := sqlt.CallbackDB{OnExec: func(query string, args ...interface{}) (sql.Result, error) {
-		assert.Equal(t, "INSERT INTO `xxx` (`a`,`b`,`c`) VALUES (?,?,?)", query)
-		if assert.Len(t, args, 3) {
-			assert.Equal(t, 3, args[0])
-			assert.Equal(t, "foo", args[1])
-			assert.Equal(t, false, args[2])
+		if query == "INSERT INTO `xxx` (`a`,`b`) VALUES (?,?)" {
+			if assert.Len(t, args, 2) {
+				assert.Equal(t, 3, args[0])
+				assert.Equal(t, "foo", args[1])
+			}
+		} else if query == "INSERT INTO `xxx` (`b`,`a`) VALUES (?,?)" {
+			if assert.Len(t, args, 2) {
+				assert.Equal(t, 3, args[1])
+				assert.Equal(t, "foo", args[0])
+			}
+		} else {
+			t.Fail()
 		}
 
 		return nil, nil
@@ -23,7 +30,6 @@ func TestInsert(t *testing.T) {
 	_, err := Insert(db, "xxx", map[string]any{
 		"a": 3,
 		"b": "foo",
-		"c": false,
 	})
 	assert.NoError(t, err)
 }
