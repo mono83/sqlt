@@ -17,6 +17,8 @@ var resolveContentTypeData = []struct {
 	{Expected: SecretContent, Given: Column{Name: "passWord"}},
 	{Expected: SecretContent, Given: Column{Name: "userPassword"}},
 	{Expected: SecretContent, Given: Column{Name: "passwordForStaff"}},
+	{Expected: SecretContent, Given: Column{Name: "urlHash"}},
+	{Expected: SecretContent, Given: Column{Name: "hashUrl"}},
 
 	{Expected: RelationIdentifierContent, Given: Column{Type: Integer, Name: "userId"}},
 	{Expected: RelationIdentifierContent, Given: Column{Type: Integer, Name: "USER_ID"}},

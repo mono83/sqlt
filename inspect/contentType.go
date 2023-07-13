@@ -78,6 +78,9 @@ func ResolveContentType(c Column) ContentType {
 	if strings.HasSuffix(name, "password") || strings.HasPrefix(name, "password") {
 		return SecretContent
 	}
+	if strings.HasSuffix(name, "hash") || strings.HasPrefix(name, "hash") {
+		return SecretContent
+	}
 	if (c.Type == Integer || c.Type == Text) && strings.HasSuffix(name, "id") {
 		return RelationIdentifierContent
 	}
