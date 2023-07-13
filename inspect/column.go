@@ -5,6 +5,7 @@ type Column struct {
 	Database string
 	Table    string
 	Name     string
+	Comment  string
 
 	Type     Type
 	Nullable bool

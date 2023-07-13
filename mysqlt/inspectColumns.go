@@ -10,7 +10,7 @@ import (
 // InspectColumns reads columns data for given table
 func InspectColumns(db *sql.DB, table string) ([]inspect.Column, error) {
 	rows, err := db.Query(
-		"SELECT `TABLE_SCHEMA`,`TABLE_NAME`,`COLUMN_NAME`,`DATA_TYPE`,`COLUMN_TYPE`,`CHARACTER_MAXIMUM_LENGTH`,`NUMERIC_PRECISION`,`IS_NULLABLE`,`COLUMN_KEY`"+
+		"SELECT `TABLE_SCHEMA`,`TABLE_NAME`,`COLUMN_NAME`,`COLUMN_COMMENT`,`DATA_TYPE`,`COLUMN_TYPE`,`CHARACTER_MAXIMUM_LENGTH`,`NUMERIC_PRECISION`,`IS_NULLABLE`,`COLUMN_KEY`"+
 			" FROM `information_schema`.`COLUMNS` WHERE `TABLE_SCHEMA`=DATABASE() AND `TABLE_NAME`=?",
 		table,
 	)
@@ -22,7 +22,7 @@ func InspectColumns(db *sql.DB, table string) ([]inspect.Column, error) {
 	var out []inspect.Column
 	for rows.Next() {
 		var c column
-		err = rows.Scan(&c.Schema, &c.Table, &c.Column, &c.Type, &c.OriginalType, &c.CharLen, &c.NumericPrecision, &c.IsNullable, &c.IndexType)
+		err = rows.Scan(&c.Schema, &c.Table, &c.Column, &c.Comment, &c.Type, &c.OriginalType, &c.CharLen, &c.NumericPrecision, &c.IsNullable, &c.IndexType)
 		if err != nil {
 			return nil, err
 		}
@@ -35,6 +35,7 @@ type column struct {
 	Schema           string
 	Table            string
 	Column           string
+	Comment          string
 	Type             string
 	OriginalType     string
 	CharLen          *int
@@ -48,6 +49,7 @@ func (c column) Covert() inspect.Column {
 		Database:     c.Schema,
 		Table:        c.Table,
 		Name:         c.Column,
+		Comment:      c.Comment,
 		OriginalType: c.OriginalType,
 		Type:         c.EvaluateType(),
 		Size:         c.EvaluateSize(),
