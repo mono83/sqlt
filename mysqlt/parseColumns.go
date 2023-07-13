@@ -2,8 +2,9 @@ package mysqlt
 
 import (
 	"database/sql"
-	"github.com/mono83/sqlt/inspect"
 	"strings"
+
+	"github.com/mono83/sqlt/inspect"
 )
 
 // InspectColumns reads columns data for given table
@@ -70,8 +71,16 @@ func (c column) EvaluateType() (t inspect.Type) {
 		t = inspect.Enumeration
 	case "set":
 		t = inspect.Set
-	case "double":
+	case "double", "float", "decimal", "dec":
 		t = inspect.Decimal
+	case "timestamp":
+		t = inspect.TimeStamp
+	case "datetime":
+		t = inspect.DateTime
+	case "date":
+		t = inspect.Date
+	case "time":
+		t = inspect.Time
 	}
 
 	return
