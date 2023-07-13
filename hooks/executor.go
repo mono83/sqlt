@@ -13,7 +13,7 @@ import (
 type Executor struct {
 	sqlt.Executor
 
-	Before func(string, ...any) (string, []any)
+	Before func(string, ...any) (string, []any, error)
 	After  func(sql.Result, error, time.Duration, string, ...any) (sql.Result, error)
 }
 
@@ -23,7 +23,11 @@ func (e Executor) Exec(query string, args ...any) (sql.Result, error) {
 		return nil, errors.New("no hook target for Executor")
 	}
 	if e.Before != nil {
-		query, args = e.Before(query, args...)
+		var err error
+		query, args, err = e.Before(query, args...)
+		if err != nil {
+			return nil, err
+		}
 	}
 	stamp := time.Now()
 	res, err := e.Executor.Exec(query, args...)

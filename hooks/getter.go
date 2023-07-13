@@ -12,7 +12,7 @@ import (
 type Getter struct {
 	sqlt.Getter
 
-	Before func(any, string, ...any) (any, string, []any)
+	Before func(any, string, ...any) (any, string, []any, error)
 	After  func(error, time.Duration, any, string, ...any) error
 }
 
@@ -22,7 +22,11 @@ func (g Getter) Get(dest any, query string, args ...any) error {
 		return errors.New("no hook target for Getter")
 	}
 	if g.Before != nil {
-		dest, query, args = g.Before(dest, query, args...)
+		var err error
+		dest, query, args, err = g.Before(dest, query, args...)
+		if err != nil {
+			return err
+		}
 	}
 	stamp := time.Now()
 	err := g.Getter.Get(dest, query, args...)

@@ -12,7 +12,7 @@ import (
 type Selector struct {
 	sqlt.Selector
 
-	Before func(any, string, ...any) (any, string, []any)
+	Before func(any, string, ...any) (any, string, []any, error)
 	After  func(error, time.Duration, any, string, ...any) error
 }
 
@@ -22,7 +22,11 @@ func (s Selector) Select(dest any, query string, args ...any) error {
 		return errors.New("no hook target for Selector")
 	}
 	if s.Before != nil {
-		dest, query, args = s.Before(dest, query, args...)
+		var err error
+		dest, query, args, err = s.Before(dest, query, args...)
+		if err != nil {
+			return err
+		}
 	}
 	stamp := time.Now()
 	err := s.Selector.Select(dest, query, args...)

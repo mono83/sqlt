@@ -13,7 +13,7 @@ import (
 type Querier struct {
 	sqlt.Querier
 
-	Before func(string, ...any) (string, []any)
+	Before func(string, ...any) (string, []any, error)
 	After  func(*sql.Rows, error, time.Duration, string, ...any) (*sql.Rows, error)
 }
 
@@ -23,7 +23,11 @@ func (q Querier) Query(query string, args ...any) (*sql.Rows, error) {
 		return nil, errors.New("no hook target for Querier")
 	}
 	if q.Before != nil {
-		query, args = q.Before(query, args...)
+		var err error
+		query, args, err = q.Before(query, args...)
+		if err != nil {
+			return nil, err
+		}
 	}
 	stamp := time.Now()
 	rows, err := q.Querier.Query(query, args...)
