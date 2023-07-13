@@ -60,7 +60,7 @@ func (c column) Covert() inspect.Column {
 func (c column) EvaluateType() (t inspect.Type) {
 	lower := strings.ToLower(c.Type)
 	switch lower {
-	case "bigint", "int", "mediumint", "smallint":
+	case "bigint", "int", "mediumint", "smallint", "tinyint":
 		t = inspect.Integer
 	case "varchar", "char", "text", "tinytext", "mediumtext", "longtext":
 		t = inspect.Text
