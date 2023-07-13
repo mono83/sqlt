@@ -1,14 +1,14 @@
 package mysqlt
 
 import (
-	"database/sql"
+	"github.com/mono83/sqlt"
 	"strings"
 
 	"github.com/mono83/sqlt/inspect"
 )
 
 // InspectColumns reads columns data for given table
-func InspectColumns(db *sql.DB, table string) ([]inspect.Column, error) {
+func InspectColumns(db sqlt.Querier, table string) ([]inspect.Column, error) {
 	rows, err := db.Query(
 		"SELECT `TABLE_SCHEMA`,`TABLE_NAME`,`COLUMN_NAME`,`COLUMN_COMMENT`,`DATA_TYPE`,`COLUMN_TYPE`,`CHARACTER_MAXIMUM_LENGTH`,`NUMERIC_PRECISION`,`IS_NULLABLE`,`COLUMN_KEY`"+
 			" FROM `information_schema`.`COLUMNS` WHERE `TABLE_SCHEMA`=DATABASE() AND `TABLE_NAME`=?",

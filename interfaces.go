@@ -2,6 +2,11 @@ package sqlt
 
 import "database/sql"
 
+// Querier is a thin interface for database connection capable to query data
+type Querier interface {
+	Query(query string, args ...any) (*sql.Rows, error)
+}
+
 // Getter is a thin interface for database connection capable to read data
 type Getter interface {
 	Get(dest interface{}, query string, args ...interface{}) error
