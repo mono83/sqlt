@@ -25,6 +25,7 @@ const (
 	CountryContent
 	CityContent
 	PostalZipContent
+	PhoneContent
 )
 
 func (c ContentType) String() string {
@@ -61,6 +62,8 @@ func (c ContentType) String() string {
 		return "city"
 	case PostalZipContent:
 		return "zip"
+	case PhoneContent:
+		return "phone"
 	default:
 		return "unknown " + strconv.Itoa(int(c))
 	}
@@ -101,6 +104,8 @@ func ResolveContentType(c Column) ContentType {
 			return CityContent
 		case "zip", "zipcode", "zip_code", "postalcode", "postal_code":
 			return PostalZipContent
+		case "phone", "phone_number", "phonenumber":
+			return PhoneContent
 		}
 		if strings.HasSuffix(name, "uri") || strings.HasPrefix(name, "uri") || strings.HasSuffix(name, "url") || strings.HasPrefix(name, "url") {
 			return URIContent

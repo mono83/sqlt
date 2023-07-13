@@ -35,7 +35,7 @@ func Priority(c Column) (p int) {
 		p *= 7
 	case NameContent, PostalZipContent:
 		p *= 5
-	case TitleContent, FirstNameContent, LastNameContent, CountryContent, CityContent, AddressContent:
+	case TitleContent, FirstNameContent, LastNameContent, CountryContent, CityContent, AddressContent, PhoneContent:
 		p *= 4
 	case URIContent:
 		p *= 3

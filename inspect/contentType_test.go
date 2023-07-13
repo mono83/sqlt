@@ -42,6 +42,7 @@ var resolveContentTypeData = []struct {
 	{Expected: CountryContent, Given: Column{Type: Text, Name: "country"}},
 	{Expected: CityContent, Given: Column{Type: Text, Name: "city"}},
 	{Expected: PostalZipContent, Given: Column{Type: Text, Name: "zip"}},
+	{Expected: PhoneContent, Given: Column{Type: Text, Name: "phone"}},
 
 	{Expected: TimestampContext, Given: Column{Type: Integer, Name: "Time"}},
 	{Expected: TimestampContext, Given: Column{Type: Integer, Name: "CreatedAt"}},
