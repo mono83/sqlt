@@ -48,7 +48,8 @@ func MakeInsert[IN any, OUT any](
 		// Converting value to save
 		values, err := mapIn(in)
 		if err == nil {
-			res, err := Insert(exec, table, values)
+			var res sql.Result
+			res, err = Insert(exec, table, values)
 			if err == nil {
 				o, err = mapOut(res)
 			}
