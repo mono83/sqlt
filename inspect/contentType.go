@@ -12,13 +12,19 @@ const (
 	RawContent ContentType = iota
 	IdentifierContent
 	RelationIdentifierContent
-	UnixSecondsContent
+	TimestampContext
 	BooleanContent
 	SecretContent
 	NameContent
 	TitleContent
 	EmailContent
 	URIContent
+	FirstNameContent
+	LastNameContent
+	AddressContent
+	CountryContent
+	CityContent
+	PostalZipContent
 )
 
 func (c ContentType) String() string {
@@ -29,8 +35,8 @@ func (c ContentType) String() string {
 		return "id"
 	case RelationIdentifierContent:
 		return "relation id"
-	case UnixSecondsContent:
-		return "unix seconds"
+	case TimestampContext:
+		return "timestamp"
 	case BooleanContent:
 		return "boolean"
 	case SecretContent:
@@ -43,6 +49,18 @@ func (c ContentType) String() string {
 		return "email"
 	case URIContent:
 		return "uri"
+	case FirstNameContent:
+		return "first name"
+	case LastNameContent:
+		return "last name"
+	case AddressContent:
+		return "address"
+	case CountryContent:
+		return "country"
+	case CityContent:
+		return "city"
+	case PostalZipContent:
+		return "zip"
 	default:
 		return "unknown " + strconv.Itoa(int(c))
 	}
@@ -60,7 +78,7 @@ func ResolveContentType(c Column) ContentType {
 	if (c.Type == Integer || c.Type == Text) && strings.HasSuffix(name, "id") {
 		return RelationIdentifierContent
 	}
-	if (c.Type == Integer || c.Type == Enumeration) && (name == "enabled" || isBooleanValues(c.Values)) {
+	if c.Type == Boolean || (c.Type == Integer || c.Type == Enumeration) && (name == "enabled" || isBooleanValues(c.Values)) {
 		return BooleanContent
 	}
 	if c.Type == Text {
@@ -71,13 +89,25 @@ func ResolveContentType(c Column) ContentType {
 			return EmailContent
 		case "title":
 			return TitleContent
+		case "firstname", "first_name":
+			return FirstNameContent
+		case "lastname", "last_name":
+			return LastNameContent
+		case "address":
+			return AddressContent
+		case "country":
+			return CountryContent
+		case "city":
+			return CityContent
+		case "zip", "zipcode", "zip_code", "postalcode", "postal_code":
+			return PostalZipContent
 		}
 		if strings.HasSuffix(name, "uri") || strings.HasPrefix(name, "uri") || strings.HasSuffix(name, "url") || strings.HasPrefix(name, "url") {
 			return URIContent
 		}
 	}
-	if c.Type == Integer && (name == "createdat" || name == "updatedat" || name == "publishedat" || name == "expiryat") {
-		return UnixSecondsContent
+	if c.Type == Integer && (name == "time" || name == "createdat" || name == "updatedat" || name == "publishedat" || name == "expiryat" || name == "nextat" || name == "scheduledat") {
+		return TimestampContext
 	}
 
 	return RawContent

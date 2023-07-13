@@ -31,11 +31,11 @@ func Priority(c Column) (p int) {
 		p *= 9
 	case RelationIdentifierContent:
 		p *= 8
-	case UnixSecondsContent:
+	case TimestampContext:
 		p *= 7
-	case NameContent:
+	case NameContent, PostalZipContent:
 		p *= 5
-	case TitleContent:
+	case TitleContent, FirstNameContent, LastNameContent, CountryContent, CityContent, AddressContent:
 		p *= 4
 	case URIContent:
 		p *= 3
