@@ -33,3 +33,9 @@ type ReaderExecutor interface {
 	Reader
 	Executor
 }
+
+// QuerierExecutor is a thin interface for database connection capable to both read and write data
+type QuerierExecutor interface {
+	Querier
+	Executor
+}
