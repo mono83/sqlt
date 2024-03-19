@@ -26,12 +26,12 @@ func (u UnixSeconds) Time() time.Time {
 func (u UnixSeconds) Value() (driver.Value, error) { return int64(u), nil }
 
 // NativeSQL returns data in SQL native format
-func (u UnixSeconds) NativeSQL() interface{} {
+func (u UnixSeconds) NativeSQL() any {
 	return u.Int64()
 }
 
 // Scan is sql.Scanner interface implementation
-func (u *UnixSeconds) Scan(src interface{}) error {
+func (u *UnixSeconds) Scan(src any) error {
 	switch x := src.(type) {
 	case int64:
 		*u = UnixSeconds(x)

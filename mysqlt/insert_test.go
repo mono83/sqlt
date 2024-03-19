@@ -9,7 +9,7 @@ import (
 )
 
 func TestInsert(t *testing.T) {
-	db := sqlt.CallbackDB{OnExec: func(query string, args ...interface{}) (sql.Result, error) {
+	db := sqlt.CallbackDB{OnExec: func(query string, args ...any) (sql.Result, error) {
 		if query == "INSERT INTO `xxx` (`a`,`b`) VALUES (?,?)" {
 			if assert.Len(t, args, 2) {
 				assert.Equal(t, 3, args[0])

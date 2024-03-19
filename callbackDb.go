@@ -14,13 +14,13 @@ var ErrCallbackNotSet = errors.New("callback not set")
 // method.
 // This can be useful in unit tests
 type CallbackDB struct {
-	OnGet    func(dest interface{}, query string, args ...interface{}) error
-	OnSelect func(dest interface{}, query string, args ...interface{}) error
-	OnExec   func(query string, args ...interface{}) (sql.Result, error)
+	OnGet    func(dest any, query string, args ...any) error
+	OnSelect func(dest any, query string, args ...any) error
+	OnExec   func(query string, args ...any) (sql.Result, error)
 }
 
 // Get is Getter interface implementation
-func (c CallbackDB) Get(dest interface{}, query string, args ...interface{}) error {
+func (c CallbackDB) Get(dest any, query string, args ...any) error {
 	if c.OnGet == nil {
 		return ErrCallbackNotSet
 	}
@@ -28,7 +28,7 @@ func (c CallbackDB) Get(dest interface{}, query string, args ...interface{}) err
 }
 
 // Select is Selector interface implementation
-func (c CallbackDB) Select(dest interface{}, query string, args ...interface{}) error {
+func (c CallbackDB) Select(dest any, query string, args ...any) error {
 	if c.OnSelect == nil {
 		return ErrCallbackNotSet
 	}
@@ -36,7 +36,7 @@ func (c CallbackDB) Select(dest interface{}, query string, args ...interface{}) 
 }
 
 // Exec is Executor interface implementation
-func (c CallbackDB) Exec(query string, args ...interface{}) (sql.Result, error) {
+func (c CallbackDB) Exec(query string, args ...any) (sql.Result, error) {
 	if c.OnExec == nil {
 		return nil, ErrCallbackNotSet
 	}

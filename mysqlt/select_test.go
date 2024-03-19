@@ -8,7 +8,7 @@ import (
 )
 
 func TestSelectByID(t *testing.T) {
-	db := sqlt.CallbackDB{OnSelect: func(_ interface{}, query string, args ...interface{}) error {
+	db := sqlt.CallbackDB{OnSelect: func(_ any, query string, args ...any) error {
 		assert.Equal(t, "SELECT * FROM `users` WHERE `id` IN (?,?)", query)
 		if assert.Len(t, args, 2) {
 			assert.Equal(t, 21, args[0])
@@ -23,7 +23,7 @@ func TestSelectByID(t *testing.T) {
 }
 
 func TestSelectByID1(t *testing.T) {
-	db := sqlt.CallbackDB{OnSelect: func(_ interface{}, query string, args ...interface{}) error {
+	db := sqlt.CallbackDB{OnSelect: func(_ any, query string, args ...any) error {
 		assert.Equal(t, "SELECT * FROM `users` WHERE `id`=?", query)
 		if assert.Len(t, args, 1) {
 			assert.Equal(t, 6, args[0])
@@ -37,7 +37,7 @@ func TestSelectByID1(t *testing.T) {
 }
 
 func TestMakeSelectByID(t *testing.T) {
-	db := sqlt.CallbackDB{OnSelect: func(_ interface{}, query string, args ...interface{}) error {
+	db := sqlt.CallbackDB{OnSelect: func(_ any, query string, args ...any) error {
 		assert.Equal(t, "SELECT * FROM `blocked` WHERE `id` IN (?,?,?)", query)
 		if assert.Len(t, args, 3) {
 			assert.Equal(t, "foo", args[0])

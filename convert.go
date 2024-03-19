@@ -14,7 +14,7 @@ var (
 
 // StdConvert performs conversion from interface{} to defined
 // in sql.ColumnType type using standard ruleset.
-func StdConvert(src interface{}, def *sql.ColumnType) interface{} {
+func StdConvert(src any, def *sql.ColumnType) any {
 	if def != nil && def.ScanType() != nil {
 		t := def.ScanType()
 		switch source := src.(type) {

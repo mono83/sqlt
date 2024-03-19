@@ -4,7 +4,7 @@ import "database/sql"
 
 // IterateScan scans given rows ony by one passing obtained data to
 // callback function.
-func IterateScan(rows *sql.Rows, callback func([]string, []*sql.ColumnType, []interface{})) error {
+func IterateScan(rows *sql.Rows, callback func([]string, []*sql.ColumnType, []any)) error {
 	if rows == nil {
 		return sql.ErrNoRows
 	}
@@ -27,8 +27,8 @@ func IterateScan(rows *sql.Rows, callback func([]string, []*sql.ColumnType, []in
 	for rows.Next() {
 		// Building columns and their pointers for
 		// sql.Scan func.
-		columns := make([]interface{}, columnCount)
-		columnPointers := make([]interface{}, columnCount)
+		columns := make([]any, columnCount)
+		columnPointers := make([]any, columnCount)
 		for i := range columns {
 			columnPointers[i] = &columns[i]
 		}
@@ -49,7 +49,7 @@ func IterateScan(rows *sql.Rows, callback func([]string, []*sql.ColumnType, []in
 
 // IterateScanE scans given rows ony by one passing obtained data to
 // callback function. On any error stops iteration and returns it.
-func IterateScanE(rows *sql.Rows, callback func([]string, []*sql.ColumnType, []interface{}) error) error {
+func IterateScanE(rows *sql.Rows, callback func([]string, []*sql.ColumnType, []any) error) error {
 	if rows == nil {
 		return sql.ErrNoRows
 	}
@@ -72,8 +72,8 @@ func IterateScanE(rows *sql.Rows, callback func([]string, []*sql.ColumnType, []i
 	for rows.Next() {
 		// Building columns and their pointers for
 		// sql.Scan func.
-		columns := make([]interface{}, columnCount)
-		columnPointers := make([]interface{}, columnCount)
+		columns := make([]any, columnCount)
+		columnPointers := make([]any, columnCount)
 		for i := range columns {
 			columnPointers[i] = &columns[i]
 		}

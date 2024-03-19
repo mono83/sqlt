@@ -12,7 +12,7 @@ func (t TrueFalse) Bool() bool { return bool(t) }
 func (t TrueFalse) IsTrue() bool { return t.Bool() }
 
 // NativeSQL returns data in SQL native format
-func (t TrueFalse) NativeSQL() interface{} {
+func (t TrueFalse) NativeSQL() any {
 	return t.Bool()
 }
 
@@ -20,7 +20,7 @@ func (t TrueFalse) NativeSQL() interface{} {
 func (t TrueFalse) Value() (driver.Value, error) { return t.Bool(), nil }
 
 // Scan is sql.Scanner interface implementation
-func (t *TrueFalse) Scan(value interface{}) error {
+func (t *TrueFalse) Scan(value any) error {
 	if value != nil {
 		v, err := driver.Bool.ConvertValue(value)
 		if err != nil {

@@ -8,7 +8,7 @@ import "database/sql"
 type Rowset struct {
 	ColumnNames []string
 	ColumnTypes []*sql.ColumnType
-	Rows        [][]interface{}
+	Rows        [][]any
 }
 
 // Clear cleans up rowset contents.
@@ -24,7 +24,7 @@ func (r *Rowset) Scan(rows *sql.Rows) error {
 	// Clearing current state
 	r.Clear()
 
-	return IterateScan(rows, func(names []string, types []*sql.ColumnType, row []interface{}) {
+	return IterateScan(rows, func(names []string, types []*sql.ColumnType, row []any) {
 		if r.ColumnNames == nil {
 			// First row
 			r.ColumnNames = names
@@ -41,7 +41,7 @@ func (r Rowset) Size() int {
 
 // Each iterated over each row, passing it with
 // corresponding metadata to callback function.
-func (r Rowset) Each(f func([]string, []*sql.ColumnType, []interface{})) {
+func (r Rowset) Each(f func([]string, []*sql.ColumnType, []any)) {
 	if f != nil {
 		for _, row := range r.Rows {
 			f(r.ColumnNames, r.ColumnTypes, row)
@@ -50,10 +50,10 @@ func (r Rowset) Each(f func([]string, []*sql.ColumnType, []interface{})) {
 }
 
 // SliceMap returns content of rowset as slice of maps.
-func (r Rowset) SliceMap() (out []map[string]interface{}) {
+func (r Rowset) SliceMap() (out []map[string]any) {
 	cnt := len(r.ColumnNames)
-	r.Each(func(names []string, _ []*sql.ColumnType, data []interface{}) {
-		m := make(map[string]interface{}, cnt)
+	r.Each(func(names []string, _ []*sql.ColumnType, data []any) {
+		m := make(map[string]any, cnt)
 		for i := 0; i < cnt; i++ {
 			m[names[i]] = data[i]
 		}
@@ -68,7 +68,7 @@ func (r Rowset) MapValuesStd() Rowset {
 }
 
 // MapValues maps all values in rowset using given conversion function.
-func (r Rowset) MapValues(f func(src interface{}, def *sql.ColumnType) interface{}) Rowset {
+func (r Rowset) MapValues(f func(src any, def *sql.ColumnType) any) Rowset {
 	if f == nil {
 		return r
 	}
@@ -79,7 +79,7 @@ func (r Rowset) MapValues(f func(src interface{}, def *sql.ColumnType) interface
 
 	cnt := len(r.ColumnNames)
 	for _, src := range r.Rows {
-		row := make([]interface{}, cnt)
+		row := make([]any, cnt)
 		for i := 0; i < cnt; i++ {
 			row[i] = f(src[i], r.ColumnTypes[i])
 		}
