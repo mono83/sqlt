@@ -22,6 +22,9 @@ func FromMySQL(s string) string {
 var (
 	mysqlEngineRegex         = regexp.MustCompile(`(?mi)engine\s?=\s?\w+`)
 	mysqlDefaultCharsetRegex = regexp.MustCompile(`(?mi)default charset\s?=\s?\w+`)
+	mysqlRowFormat           = regexp.MustCompile(`(?mi)row_format\s?=\s?\w+`)
+	mysqlEnumRegex           = regexp.MustCompile(`(?Ui)enum \(.*\)`)
+	mysqlCommaRegex          = regexp.MustCompile(`(?Ui),\s+\)`)
 )
 
 // FromMySQLCreateTable converts SQL CREATE TABLE query from
@@ -36,16 +39,23 @@ func FromMySQLCreateTable(s string) string {
 		line := scanner.Text()
 		line = strings.TrimSpace(line)
 		if strings.Contains(line, "AUTO_INCREMENT") {
-			line = strings.ReplaceAll(line, "AUTO_INCREMENT", "")
+			line = strings.ReplaceAll(line, "AUTO_INCREMENT", "PRIMARY KEY")
 		}
 		if strings.Contains(line, " unsigned ") {
 			line = strings.ReplaceAll(line, " unsigned ", " ")
 		}
 		if strings.HasPrefix(line, "PRIMARY KEY ") && strings.HasSuffix(line, ",") {
-			line = line[0 : len(line)-1]
+			line = ""
 		}
 		if strings.HasPrefix(line, "KEY ") {
 			line = ""
+		}
+
+		if strings.Contains(line, "bigint(20)") {
+			line = strings.ReplaceAll(line, "bigint(20)", "INTEGER")
+		}
+		if strings.Contains(line, "BIGINT(20)") {
+			line = strings.ReplaceAll(line, "BIGINT(20)", "INTEGER")
 		}
 
 		if len(line) > 0 {
@@ -54,11 +64,19 @@ func FromMySQLCreateTable(s string) string {
 		if len(line) > 0 {
 			line = mysqlDefaultCharsetRegex.ReplaceAllString(line, "")
 		}
+		if len(line) > 0 {
+			line = mysqlRowFormat.ReplaceAllString(line, "")
+		}
+		if len(line) > 0 {
+			line = mysqlEnumRegex.ReplaceAllString(line, "text")
+		}
 
 		if len(line) > 0 {
 			out.WriteString(line)
 			out.WriteString("\n")
 		}
 	}
-	return out.String()
+	s = out.String()
+	s = mysqlCommaRegex.ReplaceAllString(s, ")")
+	return s
 }
