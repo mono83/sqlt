@@ -53,4 +53,4 @@ func (u *UnixSeconds) Scan(src any) error {
 }
 
 // String return string representation of time in UTC
-func (u UnixSeconds) String() string { return u.Time().UTC().String() }
+func (u UnixSeconds) String() string { return u.Time().String() }

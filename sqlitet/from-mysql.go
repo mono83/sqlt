@@ -44,7 +44,7 @@ func FromMySQLCreateTable(s string) string {
 		if strings.Contains(line, " unsigned ") {
 			line = strings.ReplaceAll(line, " unsigned ", " ")
 		}
-		if strings.HasPrefix(line, "PRIMARY KEY ") && strings.HasSuffix(line, ",") {
+		if strings.HasPrefix(line, "PRIMARY KEY ") {
 			line = ""
 		}
 		if strings.HasPrefix(line, "KEY ") {
